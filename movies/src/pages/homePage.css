@@ -1,0 +1,42 @@
+.tab-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .tab-container button {
+    background-color: #6441A5; 
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .tab-container button:hover {
+    background-color: #4b2d86; 
+  }
+  
+  .tab-container button.active {
+    background-color: #8662c7; 
+  }
+  
+  .top-controls {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 0 2em; 
+  }
+  
+  .tab-container {
+    display: flex;
+    justify-content: center; 
+    margin-bottom: 15px;
+    flex-grow: 1; 
+  }
+  
+  
+  
