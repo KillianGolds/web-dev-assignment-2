@@ -1,144 +1,97 @@
-export const getMovies = () => {
-  return fetch(
-    `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&include_adult=false&include_video=false&page=1`
-  ).then((response) => {
-    if (!response.ok) {
-      throw new Error(response.json().message);
-    }
-    return response.json();
-  })
-  .catch((error) => {
-    throw error
-  });
-};
+/*=======================================================
+ Endpoints that were modified for the second assignment
+=======================================================*/
 
-export const getMovie = (args) => {
-  const [, idPart] = args.queryKey;
-  const { id } = idPart;
-  return fetch(
-    `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.REACT_APP_TMDB_KEY}`
-  ).then((response) => {
-    if (!response.ok) {
-      throw new Error(response.json().message);
-    }
-    return response.json();
-  })
-  .catch((error) => {
-    throw error
-  });
-};
-
+// Get genres endpoint
 export const getGenres = async () => {
-  return fetch(
-    "https://api.themoviedb.org/3/genre/movie/list?api_key=" +
-      process.env.REACT_APP_TMDB_KEY +
-      "&language=en-US"
-  ).then( (response) => {
-    if (!response.ok) {
-      throw new Error(response.json().message);
-    }
-    return response.json();
-  })
-  .catch((error) => {
-    throw error
-  });
+  const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/movies/genres`);  
+  if (!response.ok) {
+    throw new Error('Failed to fetch genres');
+  }
+  return response.json(); 
 };
 
-export const getMovieImages = ({ queryKey }) => {
-  const [, idPart] = queryKey;
-  const { id } = idPart;
-  return fetch(
-    `https://api.themoviedb.org/3/movie/${id}/images?api_key=${process.env.REACT_APP_TMDB_KEY}`
-  ).then( (response) => {
-    if (!response.ok) {
-      throw new Error(response.json().message);
-    }
-    return response.json();
-
-  })
-  .catch((error) => {
-    throw error
-  });
-};
-
-export const getMovieReviews = (id) => {
-  return fetch(
-    `https://api.themoviedb.org/3/movie/${id}/reviews?api_key=${process.env.REACT_APP_TMDB_KEY}`
-  )
-    .then((res) => res.json())
-    .then((json) => {
-      // console.log(json.results);
-      return json.results;
+// Get movies endpoint
+export const getMovies = () => {
+  return fetch(`${process.env.REACT_APP_API_BASE_URL}/movies/discover`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch movies');
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      throw error;
     });
 };
 
-
-/*===================================
-My added endpoints from here on 
-===================================*/
-
-export const getUpcomingMovies = async (page) => { 
-  const response = await fetch(
-      `https://api.themoviedb.org/3/movie/upcoming?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&page=${page}`
-  );
+// Get movie details endpoint
+export const getMovie = async ({ queryKey }) => {
+  const [_key, { id }] = queryKey;
+  const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/movies/movie/${id}`);
   if (!response.ok) {
-      throw new Error(response.statusText);
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+};
+
+// Get movie reviews endpoint
+export const getMovieReviews = async (id) => {
+  const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/movies/movie/${id}/reviews`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch movie reviews');
+  }
+  return response.json();
+};
+
+// Get upcoming movies endpoint
+export const getUpcomingMovies = async (page = 1) => {
+  const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/movies/upcoming?page=${page}`);
+  if (!response.ok) {
+      throw new Error('Failed to fetch upcoming movies');
   }
   return response.json();
 };
 
 // Get popular actors endpoint
-export const getPopularActors = (page) => {
-  return fetch(
-    `https://api.themoviedb.org/3/person/popular?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&page=${page}`
-  )
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error('Error fetching popular actors');
-    }
-    return response.json();
-  })
-  .catch((error) => {
-    throw error;
-  });
+export const getPopularActors = async (page = 1) => {
+  const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/actors/popular?page=${page}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch popular actors');
+  }
+  return response.json();
 };
 
 // Get actor details endpoint
-export const getActorDetails = (actorId) => {
-  return fetch(
-    `https://api.themoviedb.org/3/person/${actorId}?api_key=${process.env.REACT_APP_TMDB_KEY}&append_to_response=combined_credits`
-  )
-  .then(res => {
-    if (!res.ok) {
-      throw new Error('Failed to fetch actor details.');
-    }
-    return res.json();
-  })
-  .catch(error => {
-    throw error;
-  });
+export const getActorDetails = async (actorId) => {
+  const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/actors/${actorId}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch actor details');
+  }
+  return response.json();
 };
 
 // Get movie cast endpoint
-export const getMovieCast = ({ queryKey }) => {
-  const [, { id }] = queryKey;
-  return fetch(
-    `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.REACT_APP_TMDB_KEY}`
-  )
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error('Error fetching movie cast');
-    }
-    return response.json();
-  })
-  .then((data) => {
-    console.log('Cast data:', data); // Logging the data to the console for debugging purposes
-    return data.cast; // Returning the cast data from the response
-  })
-  .catch((error) => {
-    throw error;
-  });
+export const getMovieCast = async (id) => {
+  const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/movies/${id}/cast`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch movie cast');
+  }
+  return response.json();
 };
+
+// return search results
+export const getSearchResults = async (query) => {
+  const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/movies/search?query=${encodeURIComponent(query)}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch search results');
+  }
+  return response.json();
+};
+
+/*=================================================
+ Untouched endpoints from the first assignment
+=================================================*/
 
 // Get trending movies endpoint
 export const getTrendingMovies = () => {
@@ -193,12 +146,20 @@ export const getLatestMovies = () => {
   });
 };
 
-// return search results
-export const getSearchResults = async (query) => {
-  const url = `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(query)}&api_key=${process.env.REACT_APP_TMDB_KEY}`;
-  const response = await fetch(url); // Fetch search results
-  if (!response.ok) {
-    throw new Error('Network response was not ok.'); // Throw an error if the response is not ok
-  }
-  return response.json(); // Return the response data as JSON
+// Get movie images endpoint
+export const getMovieImages = ({ queryKey }) => {
+  const [, idPart] = queryKey;
+  const { id } = idPart;
+  return fetch(
+    `https://api.themoviedb.org/3/movie/${id}/images?api_key=${process.env.REACT_APP_TMDB_KEY}`
+  ).then( (response) => {
+    if (!response.ok) {
+      throw new Error(response.json().message);
+    }
+    return response.json();
+
+  })
+  .catch((error) => {
+    throw error
+  });
 };

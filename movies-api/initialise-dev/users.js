@@ -1,11 +1,11 @@
 const  users = [
     {
         'username': 'user1',
-        'password': 'Password321!',
+        'password': 'qwerty123!',
     },
     {
         'username': 'user2',
-        'password': 'Password123!',
+        'password': 'qwerty123!',
     },
 ];
 export default users;

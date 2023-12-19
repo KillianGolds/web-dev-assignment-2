@@ -11,18 +11,18 @@ import img from '../../images/film-poster-placeholder.png';
 
 export default function MovieCard({ movie, action }) {
   const { favorites } = useContext(MoviesContext); // Get favorites from context
-  const [expanded, setExpanded] = useState(false); 
+  const [expanded, setExpanded] = useState(false);  
+
+  console.log("Favorites in MovieCard:", favorites); // Debugging line
+  console.log("Current Movie ID:", movie.id); // Debugging line
 
   // Toggle accordion on hover
   const handleExpandChange = () => {
     setExpanded(!expanded);
   };
 
-  if (favorites.find((id) => id === movie.id)) {
-    movie.favorite = true;
-  } else {
-    movie.favorite = false;
-  }
+  // Check if favorites is an array and contains the movie ID
+  movie.favorite = Array.isArray(favorites) && favorites.find((id) => id === movie.id) !== undefined;
 
   return (
     <Card sx={{ maxWidth: 345 }} onMouseEnter={handleExpandChange} onMouseLeave={handleExpandChange}>

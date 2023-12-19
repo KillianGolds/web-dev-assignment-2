@@ -23,49 +23,48 @@ const formControl = {
 };
 
 export default function FilterMoviesCard(props) {
-  const { data, error, isLoading, isError } = useQuery("genres", getGenres, {
-    staleTime: 3 * 60 * 60 * 1000 
+  const { data: genres, error, isLoading, isError } = useQuery("genres", getGenres, {
+    staleTime: 3 * 60 * 60 * 1000, 
   });
 
-  if (isLoading || !data || !data.genres) {
+  if (isLoading) {
     return <Spinner />;
   }
   if (isError) {
     return <h1>{error.message}</h1>;
   }
 
-  const genres = data.genres; 
-  if (!genres.find(genre => genre && genre.name === "All")) {
+  if (!genres.find(genre => genre.name === "All")) {
     genres.unshift({ id: "0", name: "All" });
   }
 
-  // Function to handle the change in input fields
+  // handle the change in input fields
   const handleChange = (e, type, value) => {
     e.preventDefault();
     props.onUserInput(type, value);
   };
 
-  // Function to handle the text change
+  // handle the text change
   const handleTextChange = (e) => {
     handleChange(e, "name", e.target.value);
   };
 
-  // Function to handle the genre change
+  // handle the genre change
   const handleGenreChange = (e) => {
     handleChange(e, "genre", e.target.value);
   };
   
-  // Function to handle the vote average change
+  // handle the vote average change
   const handleVoteAverageChange = (e) => { 
     handleChange(e, "vote_average", e.target.value);
   };
 
-  // Function to handle the release date change
+  // handle the release date change
   const handleReleaseDateChange = (e) => {
     handleChange(e, "release_date", e.target.value);
   };
 
-  // Function to reset filters and clear input fields
+  // reset filters and clear input fields
   const handleResetFilters = () => {
     props.onUserInput("name", "");
     props.onUserInput("genre", "0");

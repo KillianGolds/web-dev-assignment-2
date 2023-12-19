@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -10,10 +10,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { getSearchResults } from '../../api/tmdb-api';
+import LogoutButton from '../../components/logoutButton';
+import { AuthContext } from '../../contexts/authContext';
 
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar); // Toolbar offset
 
 const SiteHeader = () => {
+  const { isAuthenticated } = useContext(AuthContext);
   const [options, setOptions] = useState([]);
 
   // Function to fetch search results
@@ -36,21 +39,24 @@ const SiteHeader = () => {
   // Handle selection of search result
   const handleSearchSelect = (event, value) => {
     if (value) {
-      const route = value.media_type === 'movie' ? '/movies/' : '/actors/'; // Determine the route based on the media type
+      const route = value.media_type === 'movie' ? '/movies/' : '/actors/'; 
       navigate(`${route}${value.id}`); // Navigate to the movie or actor page
     }
   };
   
   const navigate = useNavigate();
 
-  // Menu options
+  // Menu options for the site header
   const menuOptions = [
     { label: "Home", path: "/" },
     { label: "Favorites", path: "/movies/favorites" },
     { label: "Upcoming", path: "/movies/upcoming" },
     { label: "Actors", path: "/actors/popular" },
+    { label: "Login", path: "/login", protected: true }, 
+    { label: "Sign Up", path: "/signup", protected: true } 
   ];
 
+  // Handle menu selection
   const handleMenuSelect = (pageURL) => {
     navigate(pageURL, { replace: true });
   };
@@ -95,15 +101,22 @@ const SiteHeader = () => {
             )}
           />
           <div style={{ flexGrow: 2, display: 'flex', justifyContent: 'flex-end' }}>
-            {menuOptions.map((opt) => (
-              <Button
-                key={opt.label}
-                color="inherit"
-                onClick={() => handleMenuSelect(opt.path)}
-              >
-                {opt.label}
-              </Button>
-            ))}
+            {menuOptions.map((opt) => {
+              // Hide protected tabs if authenticated
+              if (isAuthenticated && opt.protected) {
+                return null;
+              }
+              return (
+                <Button
+                  key={opt.label}
+                  color="inherit"
+                  onClick={() => handleMenuSelect(opt.path)}
+                >
+                  {opt.label}
+                </Button>
+              );
+            })}
+            {isAuthenticated && <LogoutButton />}
           </div>
         </Toolbar>
       </AppBar>
