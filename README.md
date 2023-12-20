@@ -31,7 +31,7 @@ ______________________
 NODE_ENV=development  
 PORT=8080  
 HOST=localhost  
-MONGO_DB=mongodb+srv://<username>:<password>@moviescluster.i4ustcp.mongodb.net/movies?retryWrites=true&w=majority  
+MONGO_DB=mongodb+srv://{username}:{password}@moviescluster.i4ustcp.mongodb.net/movies?retryWrites=true&w=majority  
 TMDB_KEY=[tmdb-api-key]  
 SECRET=ilikecake
 ______________________
